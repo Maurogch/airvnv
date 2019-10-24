@@ -18,6 +18,6 @@ from django.urls import include, path
 
 urlpatterns = [
     path('', include('renting.urls')),  # Default route go to renting app
-    path('renting', include('renting.urls')),
+    path('renting/', include('renting.urls')),
     path('admin/', admin.site.urls),
 ]
