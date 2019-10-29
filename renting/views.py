@@ -5,7 +5,8 @@ from .models import *
 
 
 def index(request):
-    return HttpResponse("Hello world, from default view index")
+    # return HttpResponse("Hello world, from default view index")
+    return render(request, 'renting/index.html', {})
 
 
 def city1(request, city_id):
@@ -24,7 +25,7 @@ def city(request, city_id):
 def citys(request):
     cities = City.objects.all()
     context = {'cities': cities}
-    return render(request, 'renting/index.html', context)
+    return render(request, 'renting/city.html', context)
 
 
 def register_property(request):
