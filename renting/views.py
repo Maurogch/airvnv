@@ -26,11 +26,3 @@ def citys(request):
     cities = City.objects.all()
     context = {'cities': cities}
     return render(request, 'renting/city.html', context)
-
-
-def register_property(request):
-    cities = City.objects.all()
-    return render(request, 'renting/register-property.html', {'cities': cities})
-
-
-# def saveProperty(request):
