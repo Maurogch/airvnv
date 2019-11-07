@@ -15,9 +15,10 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import include, path
+from django.shortcuts import redirect
 
 urlpatterns = [
-    path('', include('renting.urls')),  # Default route go to renting app
+    path('', lambda request: redirect('renting/', permanent=False)),  # Default route go to renting app
     path('renting/', include('renting.urls')),
     path('admin/', admin.site.urls),
 ]
