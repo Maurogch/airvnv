@@ -1,5 +1,5 @@
 from django.db import models
-from django.contrib.auth.models import AbstractUser
+from django.contrib.auth.models import User
 
 
 class City(models.Model):
@@ -8,9 +8,17 @@ class City(models.Model):
     def __str__(self):
         return self.name
 
+    class Meta:
+        verbose_name = 'Ciuadad'
+        verbose_name_plural = 'Ciudades'
 
-class Host(AbstractUser):
+
+class Host(User):
     pass
+
+    class Meta:
+        verbose_name = 'Anfitrion'
+        verbose_name_plural = 'Anfitriones'
 
 
 class Property(models.Model):
@@ -18,11 +26,15 @@ class Property(models.Model):
     description = models.fields.TextField(blank=False)
     max_guests = models.fields.IntegerField(blank=False)
     # How to set imagefiled: https://coderwall.com/p/bz0sng/simple-django-image-upload-to-model-imagefield
-    img = models.ImageField(upload_to='imgs/properties/', height_field=400, width_field=400)
+    img = models.ImageField(upload_to='static/reting/images')
     price = models.fields.DecimalField(max_digits=8, decimal_places=2)
     city = models.ForeignKey(City, on_delete=models.PROTECT)
     host = models.ForeignKey(Host, on_delete=models.PROTECT)
     # There is an implicit list of RentDate here, accessed with rentdate_set
+
+    class Meta:
+        verbose_name = 'Propiedad'
+        verbose_name_plural = 'Propiedades'
 
     def __str__(self):
         return self.title
@@ -33,6 +45,10 @@ class Reservation(models.Model):
     guestName = models.fields.CharField(max_length=120)
     guestEmail = models.fields.EmailField(max_length=80)
     total = models.fields.DecimalField(max_digits=8, decimal_places=2)
+
+    class Meta:
+        verbose_name = 'Reserva'
+        verbose_name_plural = 'Reservas'
 
     def __str__(self):
         return self.number

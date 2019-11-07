@@ -40,8 +40,6 @@ INSTALLED_APPS = [
     'renting.apps.RentingConfig',
 ]
 
-AUTH_USER_MODEL = 'renting.Host'
-
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
