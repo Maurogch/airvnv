@@ -57,8 +57,8 @@ class Reservation(models.Model):
     total = models.fields.DecimalField(max_digits=8, decimal_places=2)
 
     class Meta:
-        verbose_name = 'Reserva'
-        verbose_name_plural = 'Reservas'
+        verbose_name = 'Reserva de cliente'
+        verbose_name_plural = 'Reservas de cliente'
 
     def __str__(self):
         return self.number
@@ -76,4 +76,8 @@ class RentDate(models.Model):
     property = models.ForeignKey(Property, on_delete=models.PROTECT, blank=False)
 
     def __str__(self):
-        return self.date
+        return self.date.__str__()
+
+    class Meta:
+        verbose_name = 'Reserva por propiedad'
+        verbose_name_plural = 'Reservas por propiedad'
