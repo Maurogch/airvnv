@@ -5,8 +5,9 @@ from .models import *
 
 
 def index(request):
-    # return HttpResponse("Hello world, from default view index")
-    return render(request, 'renting/index.html', {})
+    # properties = Property.objects.all()
+    property1 = get_object_or_404(Property, pk=1)
+    return render(request, 'renting/index.html', {'property': property1})
 
 
 def city1(request, city_id):

@@ -21,15 +21,25 @@ class Host(User):
         verbose_name_plural = 'Anfitriones'
 
 
+# Used to set path to imagefield by username
+def make_file_path(instance, filename):
+    user = instance.host.username
+    path = f'images/{user}/{filename}'
+
+    return path
+
+
 class Property(models.Model):
+    host = models.ForeignKey(Host, on_delete=models.PROTECT)
     title = models.fields.CharField(blank=False, max_length=255)
     description = models.fields.TextField(blank=False)
     max_guests = models.fields.IntegerField(blank=False)
     # How to set imagefiled: https://coderwall.com/p/bz0sng/simple-django-image-upload-to-model-imagefield
-    img = models.ImageField(upload_to='static/reting/images')
+    # https://docs.djangoproject.com/en/2.2/faq/usage/
+    # Using external function make_file_path to get username, otherwise you cant get atts from foreign key
+    img = models.ImageField(upload_to=make_file_path)
     price = models.fields.DecimalField(max_digits=8, decimal_places=2)
     city = models.ForeignKey(City, on_delete=models.PROTECT)
-    host = models.ForeignKey(Host, on_delete=models.PROTECT)
     # There is an implicit list of RentDate here, accessed with rentdate_set
 
     class Meta:

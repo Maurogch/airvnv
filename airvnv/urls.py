@@ -17,6 +17,7 @@ from django.contrib import admin
 from django.urls import include, path
 from django.shortcuts import redirect
 
+
 urlpatterns = [
     path('', lambda request: redirect('renting/', permanent=False)),  # Default route go to renting app
     path('renting/', include('renting.urls')),
