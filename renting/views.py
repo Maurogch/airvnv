@@ -5,9 +5,13 @@ from .models import *
 
 
 def index(request):
-    # properties = Property.objects.all()
-    property1 = get_object_or_404(Property, pk=1)
-    return render(request, 'renting/index.html', {'property': property1})
+    properties = Property.objects.all()
+    return render(request, 'renting/index.html', {'properties': properties})
+
+
+def single_property(request, property_id):
+    property = get_object_or_404(Property, pk=property_id)
+    return render(request, 'renting/property.html', {'property': property})
 
 
 def city1(request, city_id):
