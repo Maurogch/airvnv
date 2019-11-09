@@ -1,12 +1,11 @@
 from django.urls import path
 from . import views
-from django.conf.urls.static import static
-from django.conf import settings
 
 
 app_name = 'renting'
 urlpatterns = [
     path('', views.index, name='index'),
+    path('property/<int:property_id>', views.single_property, name='single_property'),
     path('city/<int:city_id>', views.city, name='city'),
     path('city/', views.citys, name='city')
-] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+]

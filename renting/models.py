@@ -54,6 +54,7 @@ class Reservation(models.Model):
     number = models.fields.IntegerField(unique=True)
     guestName = models.fields.CharField(max_length=120)
     guestEmail = models.fields.EmailField(max_length=80)
+    guests = models.fields.IntegerField(blank=False)
     total = models.fields.DecimalField(max_digits=8, decimal_places=2)
 
     class Meta:
@@ -61,7 +62,7 @@ class Reservation(models.Model):
         verbose_name_plural = 'Reservas de cliente'
 
     def __str__(self):
-        return self.number
+        return self.number.__str__() + ' - ' + self.guestName
 
     # Get price of property by getting property from first property in array of rentdate
     # Then multiply that price by the lenght of the array of rentdate
@@ -72,7 +73,7 @@ class Reservation(models.Model):
 
 class RentDate(models.Model):
     date = models.fields.DateField(blank=False)
-    reservation = models.ForeignKey(Reservation, on_delete=models.PROTECT, null=True, blank=True)
+    reservation = models.ForeignKey(Reservation, on_delete=models.SET_NULL, null=True, blank=True)
     property = models.ForeignKey(Property, on_delete=models.PROTECT, blank=False)
 
     def __str__(self):
