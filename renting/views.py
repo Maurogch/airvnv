@@ -9,7 +9,7 @@ import re
 def index(request):
     properties = Property.objects.all()
     cities = City.objects.all()
-    return render(request, 'renting/index.html', {'properties': properties}, {'cities': cities})
+    return render(request, 'renting/index.html', {'properties': properties, 'cities': cities})
 
 
 def single_property(request, property_id):
