@@ -6,7 +6,8 @@ from .models import *
 
 def index(request):
     properties = Property.objects.all()
-    return render(request, 'renting/index.html', {'properties': properties})
+    cities = City.objects.all()
+    return render(request, 'renting/index.html', {'properties': properties}, {'cities': cities})
 
 
 def single_property(request, property_id):
@@ -31,3 +32,29 @@ def citys(request):
     cities = City.objects.all()
     context = {'cities': cities}
     return render(request, 'renting/city.html', context)
+
+
+# problem: I can't send a string in urls (error). Search for a soultion
+def props_by_cityname(request, city_name):
+    # get city's id so I can search it in properties
+    try:
+        city = City.objects.get(name=city_name), city_name
+    except City.DoesNotExist:
+        raise Http404("La ciudad no existe")
+
+    filtered_properties = Property.objects.filter(city_id=city.city_id)
+
+    return render(request, 'renting/index.html', {filtered_properties: filtered_properties})
+
+
+def props_by_city_id(request, city_id):
+    filtered_properties = Property.objects.filter(city_id=city_id)
+
+    return render(request, 'renting/index.html', {filtered_properties: filtered_properties})
+
+
+def props_by_date_range(request, chekin, chekout):
+    # not modified yet
+    filtered_properties = Property.objects.filter()
+
+    return render(request, 'renting/index.html', {filtered_properties: filtered_properties})
