@@ -2,7 +2,6 @@ from django.shortcuts import get_object_or_404, render
 from django.http import HttpResponse
 from django.http import Http404
 from .models import *
-from .filter import FilterForm
 import random
 import re
 
@@ -10,6 +9,20 @@ import re
 def index(request):
     properties = Property.objects.all()
     cities = City.objects.all()
+    if request.method == 'POST':
+        rent_dates = RentDate.objects.all()
+
+        city_id = request.POST['city_id']
+        checkin_date = request.POST['checkin_date']
+        checkout_date = request.POST['checkout_date']
+
+        if city_id != 0:
+            properties_filtered = Property.objects.filter(city_id=city_id)
+
+        # if form.checkin_date != 0 and form.checkout_date != 0:
+        # for rd in rent_dates:
+        # if rd.date < form.checkin_date and rd.date > form.checkout_date:
+
     return render(request, 'renting/index.html', {'properties': properties, 'cities': cities})
 
 
@@ -90,29 +103,6 @@ def check_email(email):
 
 # problem: I can't send a string in urls (error). Search for a soultion
 
-def props_by_city(request):
-
-    rent_dates = RentDate.objects.all()
-    properties_filtered = Property.objects.all()
-
-    if request.method == 'POST':
-        form = FilterForm(request.POST)
-
-        if form.city_id != 0:
-            properties_filtered = Property.objects.filter(city_id=form.city_id)
-
-        #if form.checkin_date != 0 and form.checkout_date != 0:
-            #for rd in rent_dates:
-               # if rd.date < form.checkin_date and rd.date > form.checkout_date:
-
-
-
-
-
-    else:
-        form = FilterForm()
-
-    return render(request)
 
 def props_by_cityname(request, city_name):
     # get city's id so I can search it in properties

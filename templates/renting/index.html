@@ -70,17 +70,17 @@
         	<div class="col-lg-3 sidebar order-md-last ftco-animate">
         		<div class="sidebar-wrap ftco-animate">
         			<h3 class="heading mb-4">Find City</h3>
-        			<form action="" method="post">
+        			<form method="post"> {% csrf_token %}
         				<div class="fields">
 
                     <!-- search properties by city's name(this time, we give it the cities that we loaded)-->
 		              <div class="form-group">
 		                <div class="select-wrap one-third">
 	                    <div class="icon"><span class="ion-ios-arrow-down"></span></div>
-	                    <select name="" id="city_id" class="form-control" placeholder="Keyword search">
+	                    <select name="city_id" class="form-control" placeholder="Keyword search">
                             <option selected disabled value="0">Select Location</option>
                             {% for city in cities %}
-                                <option value="{{ city.city_id }}">{{ city.name }}</option>
+                                <option value="{{ city.id }}">{{ city.name }}</option>
                             {% endfor %}
 	                    </select>
 	                  </div>
@@ -88,10 +88,10 @@
 
                     <!-- search properties by date's range -->
 		              <div class="form-group">
-		                <input type="text" id="checkin_date" value="0" class="form-control checkin_date" placeholder="Date from">
+		                <input type="text" name="checkin_date" class="form-control checkin_date" placeholder="Date from">
 		              </div>
 		              <div class="form-group">
-		                <input type="text" id="checkout_date" value="0" class="form-control checkout_date" placeholder="Date to">
+		                <input type="text" name="checkout_date" class="form-control checkout_date" placeholder="Date to">
 		              </div>
 
 
@@ -106,35 +106,6 @@
 
           <div class="col-lg-9">
               <div class="row">
-              {% if filtered_properties %}
-                  {% for prop in filtered_properties %}
-                        <div class="col-sm col-md-6 col-lg-4 ftco-animate">
-                            <div class="destination">
-                                <a href="#" class="img img-2 d-flex justify-content-center align-items-center" style="background-image: url({{ prop.img.url }});">
-                                    <div class="icon d-flex justify-content-center align-items-center">
-                                        <span class="icon-link"></span>
-                                    </div>
-                                </a>
-                                <div class="text p-3">
-                                    <div class="d-flex">
-                                        <div class="one">
-                                            <h3><a href="#">{{ prop.city.name }}</a></h3>
-                                        </div>
-                                        <div class="two">
-                                            <span class="price per-price">${{ prop.price }}</span>
-                                        </div>
-                                    </div>
-                                    <p>{{ prop.title }}</p>
-                                    <hr>
-                                    <p class="bottom-area d-flex">
-                                        <span><i class="icon-map-o"></i> {{ prop.city.name }}</span>
-                                        <span class="ml-auto"><a href="#">Book Now</a></span>
-                                    </p>
-                                </div>
-                            </div>
-                        </div>
-                  {% endfor %}
-              {% endif %}
               {% if properties %}
                   {% for prop in properties %}
                         <div class="col-sm col-md-6 col-lg-4 ftco-animate">
