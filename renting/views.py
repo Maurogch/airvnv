@@ -1,29 +1,44 @@
 from django.shortcuts import get_object_or_404, render
 from django.http import HttpResponse
 from django.http import Http404
+from datetime import datetime
 from .models import *
 import random
 import re
 
 
 def index(request):
+    message = ''
     properties = Property.objects.all()
     cities = City.objects.all()
+
     if request.method == 'POST':
-        rent_dates = RentDate.objects.all()
+        try:
+            city_id = request.POST['city_id']
+            checkin_date = datetime.strptime(request.POST['checkin_date'], "%m/%d/%Y").strftime("%Y-%m-%d")
+            checkout_date = datetime.strptime(request.POST['checkout_date'], "%m/%d/%Y").strftime("%Y-%m-%d")
+        except Exception as e:
+            print(str(e))
 
-        city_id = request.POST['city_id']
-        checkin_date = request.POST['checkin_date']
-        checkout_date = request.POST['checkout_date']
+        if city_id != '':
+             properties = Property.objects.filter(city_id=city_id)
 
-        if city_id != 0:
-            properties_filtered = Property.objects.filter(city_id=city_id)
+        if checkin_date != '' and checkout_date != '':
+            checkin_date = datetime.strptime(checkin_date, "%Y-%m-%d")
+            checkout_date = datetime.strptime(checkout_date, "%Y-%m-%d")
 
-        # if form.checkin_date != 0 and form.checkout_date != 0:
-        # for rd in rent_dates:
-        # if rd.date < form.checkin_date and rd.date > form.checkout_date:
+            if checkin_date >= datetime.now() and checkout_date >= datetime.now():
+                for prop in properties:
+                    rent_dates = RentDate.objects.filter(property=prop.id, date__gte=checkin_date, date__lte=checkout_date)
+                    if rent_dates.exists():
+                        properties= properties.exclude(title=prop.title)
+            else:
+                message = "Fechas ingresadas invalidas. No puede seleccionar fechas que ya pasaron"
 
-    return render(request, 'renting/index.html', {'properties': properties, 'cities': cities})
+        if properties.count() == 0:
+            message = "No se han encontrado propiedades que cumplan con el filtro"
+
+    return render(request, 'renting/index.html', {'properties': properties, 'cities': cities, 'message': message})
 
 
 def single_property(request, property_id):

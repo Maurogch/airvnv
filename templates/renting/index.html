@@ -66,10 +66,13 @@
 
 		<section class="ftco-section">
       <div class="container">
+            {% if message %}
+                <p> {{ message }}</p>
+            {% endif %}
         <div class="row">
         	<div class="col-lg-3 sidebar order-md-last ftco-animate">
         		<div class="sidebar-wrap ftco-animate">
-        			<h3 class="heading mb-4">Find City</h3>
+        			<h3 class="heading mb-4">Busqueda de propiedades</h3>
         			<form method="post"> {% csrf_token %}
         				<div class="fields">
 
@@ -77,8 +80,8 @@
 		              <div class="form-group">
 		                <div class="select-wrap one-third">
 	                    <div class="icon"><span class="ion-ios-arrow-down"></span></div>
-	                    <select name="city_id" class="form-control" placeholder="Keyword search">
-                            <option selected disabled value="0">Select Location</option>
+	                    <select name="city_id" class="form-control" placeholder="Busqueda por ciudad">
+                            <option selected disabled value="0">Seleccione una ciudad</option>
                             {% for city in cities %}
                                 <option value="{{ city.id }}">{{ city.name }}</option>
                             {% endfor %}
@@ -88,15 +91,15 @@
 
                     <!-- search properties by date's range -->
 		              <div class="form-group">
-		                <input type="text" name="checkin_date" class="form-control checkin_date" placeholder="Date from">
+		                <input type="text" name="checkin_date" class="form-control checkin_date" placeholder="Desde que dia">
 		              </div>
 		              <div class="form-group">
-		                <input type="text" name="checkout_date" class="form-control checkout_date" placeholder="Date to">
+		                <input type="text" name="checkout_date" class="form-control checkout_date" placeholder="Hasta que dia">
 		              </div>
 
 
 		              <div class="form-group">
-		                <input type="submit" value="Search" class="btn btn-primary py-3 px-5">
+		                <input type="submit" value="Buscar" class="btn btn-primary py-3 px-5">
 		              </div>
 
 		            </div>
@@ -128,7 +131,7 @@
                                     <hr>
                                     <p class="bottom-area d-flex">
                                         <span><i class="icon-map-o"></i> {{ prop.city.name }}</span>
-                                        <span class="ml-auto"><a href="#">Book Now</a></span>
+                                        <span class="ml-auto"><a href="#">Reserve ahora</a></span>
                                     </p>
                                 </div>
                             </div>
