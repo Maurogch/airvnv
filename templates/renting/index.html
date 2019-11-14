@@ -81,7 +81,7 @@
 		                <div class="select-wrap one-third">
 	                    <div class="icon"><span class="ion-ios-arrow-down"></span></div>
 	                    <select name="city_id" class="form-control" placeholder="Busqueda por ciudad">
-                            <option selected disabled value="0">Seleccione una ciudad</option>
+                            <option selected value="0">Seleccione una ciudad</option>
                             {% for city in cities %}
                                 <option value="{{ city.id }}">{{ city.name }}</option>
                             {% endfor %}

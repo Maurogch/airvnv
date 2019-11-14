@@ -13,17 +13,17 @@ def index(request):
     cities = City.objects.all()
 
     if request.method == 'POST':
-        try:
-            city_id = request.POST['city_id']
-            checkin_date = datetime.strptime(request.POST['checkin_date'], "%m/%d/%Y").strftime("%Y-%m-%d")
-            checkout_date = datetime.strptime(request.POST['checkout_date'], "%m/%d/%Y").strftime("%Y-%m-%d")
-        except Exception as e:
-            print(str(e))
+        city_id = request.POST['city_id']
+        checkin_date = request.POST['checkin_date']
+        checkout_date = request.POST['checkout_date']
 
-        if city_id != '':
-             properties = Property.objects.filter(city_id=city_id)
+        if city_id != 0:
+            properties = Property.objects.filter(city_id=city_id)
 
         if checkin_date != '' and checkout_date != '':
+            # Convert date format in a format that the orm understands
+            checkin_date = datetime.strptime(request.POST['checkin_date'], "%m/%d/%Y").strftime("%Y-%m-%d")
+            checkout_date = datetime.strptime(request.POST['checkout_date'], "%m/%d/%Y").strftime("%Y-%m-%d")
             checkin_date = datetime.strptime(checkin_date, "%Y-%m-%d")
             checkout_date = datetime.strptime(checkout_date, "%Y-%m-%d")
 
@@ -31,7 +31,7 @@ def index(request):
                 for prop in properties:
                     rent_dates = RentDate.objects.filter(property=prop.id, date__gte=checkin_date, date__lte=checkout_date)
                     if rent_dates.exists():
-                        properties= properties.exclude(title=prop.title)
+                        properties = properties.exclude(title=prop.title)
             else:
                 message = "Fechas ingresadas invalidas. No puede seleccionar fechas que ya pasaron"
 
