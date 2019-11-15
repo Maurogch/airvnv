@@ -80,7 +80,7 @@ def single_property(request, property_id):
                 message = 'Campos incompletos'
 
     rent_dates = RentDate.objects.filter(property=property, reservation=None)  # Return only dates without reservation
-    max_guests = range(1, property.max_guests)  # imitate a 'while loop' in template
+    max_guests = range(1, property.max_guests + 1)  # imitate a 'while loop' in template
     return render(request, 'renting/property.html', {
         'property': property,
         'rent_dates': rent_dates,
@@ -91,23 +91,12 @@ def single_property(request, property_id):
     })
 
 
-def city1(request, city_id):
-    try:
-        response = "You are looking at city: {0} id: {1}".format(City.objects.get(pk=city_id), city_id)
-    except City.DoesNotExist:
-        raise Http404("La ciudad no existe")
-    return HttpResponse(response)
+def about(request):
+    return render(request, 'renting/about.html', {})
 
 
-def city(request, city_id):
-    city = get_object_or_404(City, pk=city_id)
-    return render(request, 'renting/detail.html', {'city': city})
-
-
-def citys(request):
-    cities = City.objects.all()
-    context = {'cities': cities}
-    return render(request, 'renting/city.html', context)
+def contact(request):
+    return render(request, 'renting/contact.html', {})
 
 
 def check_email(email):
