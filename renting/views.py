@@ -1,6 +1,4 @@
 from django.shortcuts import get_object_or_404, render
-from django.http import HttpResponse
-from django.http import Http404
 from datetime import datetime
 from .models import *
 import random
@@ -9,89 +7,106 @@ import re
 
 def index(request):
     message = ''
-    properties = Property.objects.all()
-    cities = City.objects.all()
+    properties = []
+    cities = []
 
-    if request.method == 'POST':
-        city_id = request.POST['city_id']
-        checkin_date = request.POST['checkin_date']
-        checkout_date = request.POST['checkout_date']
-        cant_guests = request.POST['cant_guests']
+    try:
+        properties = Property.objects.all()
+        cities = City.objects.all()
 
-        # city filter
-        if city_id != '0':
-            properties = Property.objects.filter(city_id=city_id)
+        if request.method == 'POST':
+            city_id = request.POST['city_id']
+            checkin_date = request.POST['checkin_date']
+            checkout_date = request.POST['checkout_date']
+            cant_guests = request.POST['cant_guests']
 
-        # pax filter
-        if cant_guests != '':
-            for prop in properties:
-                if prop.max_guests < int(cant_guests):
-                    properties = properties.exclude(pk=prop.id)
+            # city filter
+            if city_id != '0':
+                properties = Property.objects.filter(city_id=city_id)
 
-        # date filter
-        if checkin_date != '' and checkout_date != '':
-            # Convert date format in a format that the orm understands
-            checkin_date = datetime.strptime(request.POST['checkin_date'], "%m/%d/%Y").strftime("%Y-%m-%d")
-            checkout_date = datetime.strptime(request.POST['checkout_date'], "%m/%d/%Y").strftime("%Y-%m-%d")
-            checkin_date = datetime.strptime(checkin_date, "%Y-%m-%d").date()
-            checkout_date = datetime.strptime(checkout_date, "%Y-%m-%d").date()
-
-            if checkin_date >= datetime.now().date() and checkout_date >= datetime.now().date():
+            # pax filter
+            if cant_guests != '':
                 for prop in properties:
-                    rent_dates = RentDate.objects.filter(property=prop.id, date__gte=checkin_date, date__lte=checkout_date)
-                    rent_dates = rent_dates.exclude(reservation__isnull=False)
-
-                    if not rent_dates.exists():
+                    if prop.max_guests < int(cant_guests):
                         properties = properties.exclude(pk=prop.id)
-            else:
-                message = "No se ha podido filtrar las propiedades. Fechas ingresadas invalidas"
 
-        if properties.count() == 0:
-            message = "No se han encontrado propiedades vacantes que cumplan con el filtro"
+            # date filter
+            if checkin_date != '' and checkout_date != '':
+                # Convert date format in a format that the orm understands
+                checkin_date = datetime.strptime(request.POST['checkin_date'], "%m/%d/%Y").strftime("%Y-%m-%d")
+                checkout_date = datetime.strptime(request.POST['checkout_date'], "%m/%d/%Y").strftime("%Y-%m-%d")
+                checkin_date = datetime.strptime(checkin_date, "%Y-%m-%d").date()
+                checkout_date = datetime.strptime(checkout_date, "%Y-%m-%d").date()
+
+                # Check that date isn't in the past
+                if checkout_date >= datetime.now().date():
+                    for prop in properties:
+                        rent_dates = RentDate.objects.filter(property=prop.id, date__gte=checkin_date, date__lte=checkout_date)
+                        rent_dates = rent_dates.exclude(reservation__isnull=False)
+
+                        if not rent_dates.exists():
+                            properties = properties.exclude(pk=prop.id)
+                else:
+                    message = "Fechas ingresadas invalidas"
+
+            if properties.count() == 0:
+                message = "No se han encontrado propiedades vacantes que cumplan con el filtro"
+
+    except Exception as ex:
+        message = 'Opps hubo un error al aceder a los datos, intente de nuevo en unos minutos'
 
     return render(request, 'renting/index.html', {'properties': properties, 'cities': cities, 'message': message})
 
 
 def single_property(request, property_id):
     property = get_object_or_404(Property, pk=property_id)
+    rent_dates = []
     message = ''
+    max_guests = [0]
+    post = False  # Set flag for loading modal window in template
     comission = property.price * 8 / 100
     total_day = property.price + comission
     total = 0
-    post = False  # Set flag for loading modal window in template
-    if request.method == 'POST':
-        post = True
 
-        name = request.POST['name']
-        email = request.POST['email']
-        guests = request.POST['guests']
-        rent_dates_id = request.POST.getlist('rent_dates[]')  # get array from Form
-        if not check_email(email):
-            message = 'Email no válido'
-        else:
-            if name != '' and email != '' and guests != '0' and len(rent_dates_id) != 0:
-                total = total_day * len(rent_dates_id)
-                reservation = Reservation(
-                    number=random.randint(1000, 10000),
-                    guestName=name,
-                    guestEmail=email,
-                    guests=guests,
-                    total=total
-                )
+    try:
+        if request.method == 'POST':
+            post = True
 
-                reservation.save()  # ORM save sets id in object
-
-                for rent_date_id in rent_dates_id:  # Set this reservation to rent_dates selected
-                    rent_date = RentDate.objects.get(pk=rent_date_id)
-                    setattr(rent_date, 'reservation', reservation)  # sets attribute to object
-                    rent_date.save()
-                message = 'Reserva hecha con exito, Huespedes: %s, Días: ' \
-                          '%d, Total: $%d' % (guests, len(rent_dates_id), total)
+            name = request.POST['name']
+            email = request.POST['email']
+            guests = request.POST['guests']
+            rent_dates_id = request.POST.getlist('rent_dates[]')  # get array from Form
+            if not check_email(email):
+                message = 'Email no válido'
             else:
-                message = 'Campos incompletos'
+                if name != '' and email != '' and guests != '0' and len(rent_dates_id) != 0:
+                    total = total_day * len(rent_dates_id)
+                    reservation = Reservation(
+                        number=random.randint(1000, 10000),
+                        guestName=name,
+                        guestEmail=email,
+                        guests=guests,
+                        total=total
+                    )
 
-    rent_dates = RentDate.objects.filter(property=property, reservation=None)  # Return only dates without reservation
-    max_guests = range(1, property.max_guests + 1)  # imitate a 'while loop' in template
+                    reservation.save()  # ORM save sets id in object
+
+                    for rent_date_id in rent_dates_id:  # Set this reservation to rent_dates selected
+                        rent_date = RentDate.objects.get(pk=rent_date_id)
+                        setattr(rent_date, 'reservation', reservation)  # sets attribute to object
+                        rent_date.save()
+                    message = 'Reserva hecha con exito, Huespedes: %s, Días: ' \
+                              '%d, Total: $%d' % (guests, len(rent_dates_id), total)
+                else:
+                    message = 'Campos incompletos'
+
+        # Return only dates without reservation
+        rent_dates = RentDate.objects.filter(property=property, reservation=None)
+        max_guests = range(1, property.max_guests + 1)  # imitate a 'while loop' in template
+
+    except Exception as ex:
+        message = 'Opps hubo un error al aceder a los datos, intente de nuevo en unos minutos'
+
     return render(request, 'renting/property.html', {
         'property': property,
         'rent_dates': rent_dates,
