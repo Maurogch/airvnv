@@ -17,7 +17,7 @@ def index(request):
         checkin_date = request.POST['checkin_date']
         checkout_date = request.POST['checkout_date']
 
-        if city_id != 0:
+        if city_id != '0':
             properties = Property.objects.filter(city_id=city_id)
 
         if checkin_date != '' and checkout_date != '':
