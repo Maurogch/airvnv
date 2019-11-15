@@ -71,13 +71,18 @@ class Reservation(models.Model):
         return self.total
 
 
+# Return instance title of foreignkey attribute in RentDate
+def get_property_title(instance):
+    return instance.property.title
+
+
 class RentDate(models.Model):
-    date = models.fields.DateField(blank=False)
+    date = models.fields.DateField(blank=False, unique=True)
     reservation = models.ForeignKey(Reservation, on_delete=models.SET_NULL, null=True, blank=True)
     property = models.ForeignKey(Property, on_delete=models.PROTECT, blank=False)
 
     def __str__(self):
-        return self.date.__str__()
+        return get_property_title(self) + ' - ' + self.date.__str__()
 
     class Meta:
         verbose_name = 'Reserva por propiedad'
