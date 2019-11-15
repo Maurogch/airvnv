@@ -38,6 +38,8 @@ class Property(models.Model):
     # https://docs.djangoproject.com/en/2.2/faq/usage/
     # Using external function make_file_path to get username, otherwise you cant get atts from foreign key
     img = models.ImageField(upload_to=make_file_path)
+    img2 = models.ImageField(upload_to=make_file_path)
+    img3 = models.ImageField(upload_to=make_file_path)
     price = models.fields.DecimalField(max_digits=8, decimal_places=2)
     city = models.ForeignKey(City, on_delete=models.PROTECT)
     # There is an implicit list of RentDate here, accessed with rentdate_set
