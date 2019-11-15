@@ -58,9 +58,6 @@
             <ul class="navbar-nav ml-auto">
                 <li class="nav-item"><a href="index.html" class="nav-link">Home</a></li>
                 <li class="nav-item"><a href="about.html" class="nav-link">About</a></li>
-                <li class="nav-item"><a href="places.html" class="nav-link">Places</a></li>
-                <li class="nav-item active"><a href="hotel.html" class="nav-link">Hotels</a></li>
-                <li class="nav-item"><a href="blog.html" class="nav-link">Blog</a></li>
                 <li class="nav-item"><a href="contact.html" class="nav-link">Contact</a></li>
             </ul>
         </div>
@@ -76,10 +73,10 @@
              data-scrollax-parent="true">
             <div class="col-md-9 text-center ftco-animate" data-scrollax=" properties: { translateY: '70%' }">
                 <p class="breadcrumbs" data-scrollax="properties: { translateY: '30%', opacity: 1.6 }"><span
-                        class="mr-2 shadowbox"><a href="index.html">Home</a></span> <span class="shadowbox">Hotel</span>
+                        class="mr-2 shadowbox"><a href="index.html">Home</a></span> <span class="shadowbox">Propiedad</span>
                 </p>
                 <h1 class="mb-3 bread titleshadow" data-scrollax="properties: { translateY: '30%', opacity: 1.6 }">
-                    Hotels</h1>
+                    Propiedad</h1>
             </div>
         </div>
     </div>
@@ -143,7 +140,7 @@
                                         <div class="form-group">
                                             <div class="select-wrap one-third">
                                                 <div class="icon"><span class="ion-ios-arrow-down"></span></div>
-                                                <select name="guests" class="form-control" placeholder="Huespedes">
+                                                <select name="guests" class="form-control">
                                                     <option value="0">Huespedes</option>
                                                     {% for i in max_guests %}
                                                         <option value={{ i }}>{{ i }}</option>
@@ -162,7 +159,7 @@
                                         <div class="form-group">
                                             <div class="select-wrap one-third">
                                                 <div class="icon"><span class="ion-ios-arrow-down"></span></div>
-                                                <select name="rent_dates[]" id="multiple" class="form-control" placeholder="test" multiple="multiple">
+                                                <select name="rent_dates[]" id="multiple" class="form-control" multiple="multiple">
                                                     {% for rent_date in rent_dates %}
                                                         <option value="{{ rent_date.id }}">{{ rent_date.date }}</option>
                                                     {% endfor %}
@@ -172,7 +169,7 @@
                                     </div>
                                     <div class="col-md-12">
                                         <div class="form-group">
-                                            <input type="submit" value="Check Availability"
+                                            <input type="submit" value="Hacer Reserva"
                                                    class="btn btn-primary py-3">
                                         </div>
                                     </div>

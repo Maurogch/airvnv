@@ -32,7 +32,7 @@ def index(request):
                     rent_dates = RentDate.objects.filter(property=prop.id, date__gte=checkin_date, date__lte=checkout_date)
                     rent_dates = rent_dates.exclude(reservation__isnull=False)
 
-                    if rent_dates.exists() == False:
+                    if not rent_dates.exists():
                         properties = properties.exclude(pk=prop.id)
             else:
                 message = "No se ha podido filtrar las propiedades. Fechas ingresadas invalidas"
@@ -79,7 +79,7 @@ def single_property(request, property_id):
             else:
                 message = 'Campos incompletos'
 
-    rent_dates = RentDate.objects.filter(reservation=None)  # Return only dates without reservation
+    rent_dates = RentDate.objects.filter(property=property, reservation=None)  # Return only dates without reservation
     max_guests = range(1, property.max_guests)  # imitate a 'while loop' in template
     return render(request, 'renting/property.html', {
         'property': property,
