@@ -113,7 +113,7 @@
                   {% for prop in properties %}
                         <div class="col-sm col-md-6 col-lg-4 ftco-animate">
                             <div class="destination">
-                                <a href="#" class="img img-2 d-flex justify-content-center align-items-center" style="background-image: url({{ prop.img.url }});">
+                                <a href="{% url 'renting:single_property' prop.id %}" class="img img-2 d-flex justify-content-center align-items-center" style="background-image: url({{ prop.img.url }});">
                                     <div class="icon d-flex justify-content-center align-items-center">
                                         <span class="icon-link"></span>
                                     </div>
@@ -131,7 +131,7 @@
                                     <hr>
                                     <p class="bottom-area d-flex">
                                         <span><i class="icon-map-o"></i> {{ prop.city.name }}</span>
-                                        <span class="ml-auto"><a href="#">Reserve ahora</a></span>
+                                        <span class="ml-auto"><a href="{% url 'renting:single_property' prop.id %}">Reserve ahora</a></span>
                                     </p>
                                 </div>
                             </div>

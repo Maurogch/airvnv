@@ -24,19 +24,21 @@ def index(request):
             # Convert date format in a format that the orm understands
             checkin_date = datetime.strptime(request.POST['checkin_date'], "%m/%d/%Y").strftime("%Y-%m-%d")
             checkout_date = datetime.strptime(request.POST['checkout_date'], "%m/%d/%Y").strftime("%Y-%m-%d")
-            checkin_date = datetime.strptime(checkin_date, "%Y-%m-%d")
-            checkout_date = datetime.strptime(checkout_date, "%Y-%m-%d")
+            checkin_date = datetime.strptime(checkin_date, "%Y-%m-%d").date()
+            checkout_date = datetime.strptime(checkout_date, "%Y-%m-%d").date()
 
-            if checkin_date >= datetime.now() and checkout_date >= datetime.now():
+            if checkin_date >= datetime.now().date() and checkout_date >= datetime.now().date():
                 for prop in properties:
                     rent_dates = RentDate.objects.filter(property=prop.id, date__gte=checkin_date, date__lte=checkout_date)
-                    if rent_dates.exists():
-                        properties = properties.exclude(title=prop.title)
+                    rent_dates = rent_dates.exclude(reservation__isnull=False)
+
+                    if rent_dates.exists() == False:
+                        properties = properties.exclude(pk=prop.id)
             else:
-                message = "Fechas ingresadas invalidas. No puede seleccionar fechas que ya pasaron"
+                message = "No se ha podido filtrar las propiedades. Fechas ingresadas invalidas"
 
         if properties.count() == 0:
-            message = "No se han encontrado propiedades que cumplan con el filtro"
+            message = "No se han encontrado propiedades vacantes que cumplan con el filtro"
 
     return render(request, 'renting/index.html', {'properties': properties, 'cities': cities, 'message': message})
 
