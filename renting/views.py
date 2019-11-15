@@ -16,10 +16,19 @@ def index(request):
         city_id = request.POST['city_id']
         checkin_date = request.POST['checkin_date']
         checkout_date = request.POST['checkout_date']
+        cant_guests = request.POST['cant_guests']
 
+        # city filter
         if city_id != '0':
             properties = Property.objects.filter(city_id=city_id)
 
+        # pax filter
+        if cant_guests != '':
+            for prop in properties:
+                if prop.max_guests < int(cant_guests):
+                    properties = properties.exclude(pk=prop.id)
+
+        # date filter
         if checkin_date != '' and checkout_date != '':
             # Convert date format in a format that the orm understands
             checkin_date = datetime.strptime(request.POST['checkin_date'], "%m/%d/%Y").strftime("%Y-%m-%d")
