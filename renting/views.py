@@ -55,6 +55,8 @@ def index(request):
 def single_property(request, property_id):
     property = get_object_or_404(Property, pk=property_id)
     message = ''
+    comission = property.price * 8 / 100
+    total_day = property.price + comission
     total = 0
     post = False  # Set flag for loading modal window in template
     if request.method == 'POST':
@@ -68,7 +70,7 @@ def single_property(request, property_id):
             message = 'Email no válido'
         else:
             if name != '' and email != '' and guests != '0' and len(rent_dates_id) != 0:
-                total = property.price * len(rent_dates_id)
+                total = total_day * len(rent_dates_id)
                 reservation = Reservation(
                     number=random.randint(1000, 10000),
                     guestName=name,
@@ -96,7 +98,9 @@ def single_property(request, property_id):
         'message': message,
         'max_guests': max_guests,
         'post': post,
-        'total': total
+        'total': total,
+        'comission': comission,
+        'total_day': total_day
     })
 
 
@@ -114,31 +118,3 @@ def check_email(email):
         return False
     else:
         return True
-
-
-# problem: I can't send a string in urls (error). Search for a soultion
-
-
-def props_by_cityname(request, city_name):
-    # get city's id so I can search it in properties
-    try:
-        city = City.objects.get(name=city_name), city_name
-    except City.DoesNotExist:
-        raise Http404("La ciudad no existe")
-
-    filtered_properties = Property.objects.filter(city_id=city.city_id)
-
-    return render(request, 'renting/index.html', {filtered_properties: filtered_properties})
-
-
-def props_by_city_id(request, city_id):
-    filtered_properties = Property.objects.filter(city_id=city_id)
-
-    return render(request, 'renting/index.html', {filtered_properties: filtered_properties})
-
-
-def props_by_date_range(request, chekin, chekout):
-    # not modified yet
-    filtered_properties = Property.objects.filter()
-
-    return render(request, 'renting/index.html', {filtered_properties: filtered_properties})
